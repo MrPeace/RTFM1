@@ -4,11 +4,12 @@ from bson.objectid import ObjectId
 from flask_cors import CORS
 from os import getenv
 
+import certifi
+
 mongo_string = getenv('MONGO_STRING')
 
 app = Flask(__name__)
-client = MongoClient(mongo_string)
-# db = client.lin_flask
+client = MongoClient(mongo_string, tlsCAFile=certifi.where())
 db = client['RTFM1']
 CORS(app)
 
@@ -31,13 +32,13 @@ def data():
         db['users'].insert_one({
             "firstName": firstName,
             "lastName": lastName,
-            "emailId":emailId
+            "emailId": emailId
         })
         return jsonify({
             'status': 'Data is posted to MongoDB!',
             'firstName': firstName,
             'lastName': lastName,
-            'emailId':emailId
+            'emailId': emailId
         })
     
     # GET all data from database
